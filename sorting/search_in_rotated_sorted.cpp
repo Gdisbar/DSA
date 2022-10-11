@@ -1,58 +1,58 @@
 //Approach/Observation
-mid is on left : a[lo]<=a[mid]<=a[hi]
-mid is on right : a[lo]>nums[hi]>=a[mid]
-arrangement-1 : a[lo]<=a[mid]>=a[hi] //[4,5,6,|7|,0,1,2] , target=5,1 ,applicable for anything left of 0 i.e [4,5,6,7]
-if(arr[lo]<=target && target<=a[mid])  
-      hi=mid-1; //mid is on left,target a[lo...mid-1]
-else lo=mid+1; //mid is on right,target is in a[mid+1...hi]
+// mid is on left : a[lo]<=a[mid]<=a[hi]
+// mid is on right : a[lo]>nums[hi]>=a[mid]
+// arrangement-1 : a[lo]<=a[mid]>=a[hi] //[4,5,6,|7|,0,1,2] , target=5,1 ,applicable for anything left of 0 i.e [4,5,6,7]
+// if(arr[lo]<=target && target<=a[mid])  
+//       hi=mid-1; //mid is on left,target a[lo...mid-1]
+// else lo=mid+1; //mid is on right,target is in a[mid+1...hi]
             
-arrangement-2 : a[lo]>=a[mid]&&a[mid]<=a[hi] //[4,5,6,7,|0|,1,2] , target=5,1 applicable for [0,1,2]
-if(a[mid]<=target&&target<=a[hi])
-       lo=mid+1;
-else hi=mid-1;
+// arrangement-2 : a[lo]>=a[mid]&&a[mid]<=a[hi] //[4,5,6,7,|0|,1,2] , target=5,1 applicable for [0,1,2]
+// if(a[mid]<=target&&target<=a[hi])
+//        lo=mid+1;
+// else hi=mid-1;
             
-arrangement-3 : target<=a[mid] // mid is in [4,5,6,7] and target in [0,1,2] 
-                    hi=mid-1
-                else lo=mid+1
+// arrangement-3 : target<=a[mid] // mid is in [4,5,6,7] and target in [0,1,2] 
+//                     hi=mid-1
+//                 else lo=mid+1
 
-//Search in Rotated Sorted Array II
+// //Search in Rotated Sorted Array II
 
-skip duplicate in left & right half //[4,5,6,6,7,0,1,2,4,4] --> [4,5,6,|7|,0,1,2] rest is exactly same
+// skip duplicate in left & right half //[4,5,6,6,7,0,1,2,4,4] --> [4,5,6,|7|,0,1,2] rest is exactly same
 
-arrangement-1 : a[lo]<=a[mid] --> same as above //a[mid]>=a[hi] , loose bound might be omitted
-arrangement-2 : same as above // arrangement-3 not needed covered under arrangement-2 + duplicate elemination
+// arrangement-1 : a[lo]<=a[mid] --> same as above //a[mid]>=a[hi] , loose bound might be omitted
+// arrangement-2 : same as above // arrangement-3 not needed covered under arrangement-2 + duplicate elemination
 
 33. Search in Rotated Sorted Array
 ====================================
-There is an integer array nums sorted in ascending order (with distinct values).
+// There is an integer array nums sorted in ascending order (with distinct values).
 
-Prior to being passed to your function, nums is possibly rotated at an unknown 
-pivot index k (1 <= k < nums.length) such that the resulting array is [nums[k], 
-nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). 
-For example, [0,1,2,4,5,6,7] might be rotated at pivot index 3 and become 
-[4,5,6,7,0,1,2].
+// Prior to being passed to your function, nums is possibly rotated at an unknown 
+// pivot index k (1 <= k < nums.length) such that the resulting array is [nums[k], 
+// nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). 
+// For example, [0,1,2,4,5,6,7] might be rotated at pivot index 3 and become 
+// [4,5,6,7,0,1,2].
 
-Given the array nums after the possible rotation and an integer target, 
-return the index of target if it is in nums, or -1 if it is not in nums.
+// Given the array nums after the possible rotation and an integer target, 
+// return the index of target if it is in nums, or -1 if it is not in nums.
 
-You must write an algorithm with O(log n) runtime complexity.
+// You must write an algorithm with O(log n) runtime complexity.
 
  
 
-Example 1:
+// Example 1:
 
-Input: nums = [4,5,6,7,0,1,2], target = 0
-Output: 4
+// Input: nums = [4,5,6,7,0,1,2], target = 0
+// Output: 4
 
-Example 2:
+// Example 2:
 
-Input: nums = [4,5,6,7,0,1,2], target = 3
-Output: -1
+// Input: nums = [4,5,6,7,0,1,2], target = 3
+// Output: -1
 
-Example 3:
+// Example 3:
 
-Input: nums = [1], target = 0
-Output: -1
+// Input: nums = [1], target = 0
+// Output: -1
 
 
 // 69 % faster,
@@ -96,29 +96,29 @@ int search(vector<int>& arr, int target) {
 
 81. Search in Rotated Sorted Array II
 =========================================
-There is an integer array nums sorted in non-decreasing order (not necessarily 
-with distinct values).Before being passed to your function, nums is rotated at 
-an unknown pivot index k (0 <= k < nums.length) such that the resulting array is 
-[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). 
-For example, [0,1,2,4,4,4,5,6,6,7] might be rotated at pivot index 5 and become 
-[4,5,6,6,7,0,1,2,4,4].
+// There is an integer array nums sorted in non-decreasing order (not necessarily 
+// with distinct values).Before being passed to your function, nums is rotated at 
+// an unknown pivot index k (0 <= k < nums.length) such that the resulting array is 
+// [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). 
+// For example, [0,1,2,4,4,4,5,6,6,7] might be rotated at pivot index 5 and become 
+// [4,5,6,6,7,0,1,2,4,4].
 
-Given the array nums after the rotation and an integer target, return true if 
-target is in nums, or false if it is not in nums.
+// Given the array nums after the rotation and an integer target, return true if 
+// target is in nums, or false if it is not in nums.
 
-You must decrease the overall operation steps as much as possible.
+// You must decrease the overall operation steps as much as possible.
 
  
 
-Example 1:
+// Example 1:
 
-Input: nums = [2,5,6,0,0,1,2], target = 0
-Output: true
+// Input: nums = [2,5,6,0,0,1,2], target = 0
+// Output: true
 
-Example 2:
+// Example 2:
 
-Input: nums = [2,5,6,0,0,1,2], target = 3
-Output: false
+// Input: nums = [2,5,6,0,0,1,2], target = 3
+// Output: false
 
 
 
