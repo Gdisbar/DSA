@@ -1,67 +1,67 @@
 Painter''s Partition Problem
 ===============================
 
-Given 2 integers A and B and an array of integars C of size N.
+// Given 2 integers A and B and an array of integars C of size N.
 
-Element C[i] represents length of ith board.
+// Element C[i] represents length of ith board.
 
-You have to paint all N boards [C0, C1, C2, C3 … CN-1]. There are A 
-painters available and each of them takes B units of time to paint 
-1 unit of board.
+// You have to paint all N boards [C0, C1, C2, C3 … CN-1]. There are A 
+// painters available and each of them takes B units of time to paint 
+// 1 unit of board.
 
-Calculate and return minimum time required to paint all boards under the 
-constraints that any painter will only paint contiguous sections of board.
+// Calculate and return minimum time required to paint all boards under the 
+// constraints that any painter will only paint contiguous sections of board.
 
-        2 painters cannot share a board to paint. That is to say, a board
-        cannot be painted partially by one painter, and partially by another.
-        A painter will only paint contiguous boards. Which means a
-        configuration where painter 1 paints board 1 and 3 but not 2 is
-        invalid.
+//         2 painters cannot share a board to paint. That is to say, a board
+//         cannot be painted partially by one painter, and partially by another.
+//         A painter will only paint contiguous boards. Which means a
+//         configuration where painter 1 paints board 1 and 3 but not 2 is
+//         invalid.
 
-Return the ans % 10000003
-
-
+// Return the ans % 10000003
 
 
-Input Format
 
-The first argument given is the integer A.
-The second argument given is the integer B.
-The third argument given is the integer array C.
 
-Output Format
+// Input Format
 
-Return minimum time required to paint all boards under the constraints that any 
-painter will only paint contiguous sections of board % 10000003.
+// The first argument given is the integer A.
+// The second argument given is the integer B.
+// The third argument given is the integer array C.
 
-Constraints
+// Output Format
 
-1 <=A <= 1000
-1 <= B <= 10^6
-1 <= C.size() <= 10^5
-1 <= C[i] <= 10^6
+// Return minimum time required to paint all boards under the constraints that any 
+// painter will only paint contiguous sections of board % 10000003.
 
-For Example
+// Constraints
 
-Input 1:
-    A = 2
-    B = 5
-    C = [1, 10]
-Output 1:
-    50
-Explanation 1:
-    Possibility 1:- same painter paints both blocks, time taken = 55 units
-    Possibility 2:- Painter 1 paints block 1, painter 2 paints block 2, 
-    time take = max(5, 50) = 50
-    There are no other distinct ways to paint boards.
-    ans = 50%10000003
+// 1 <=A <= 1000
+// 1 <= B <= 10^6
+// 1 <= C.size() <= 10^5
+// 1 <= C[i] <= 10^6
 
-Input 2:
-    A = 10
-    B = 1
-    C = [1, 8, 11, 3]
-Output 2:
-    11
+// For Example
+
+// Input 1:
+//     A = 2
+//     B = 5
+//     C = [1, 10]
+// Output 1:
+//     50
+// Explanation 1:
+//     Possibility 1:- same painter paints both blocks, time taken = 55 units
+//     Possibility 2:- Painter 1 paints block 1, painter 2 paints block 2, 
+//     time take = max(5, 50) = 50
+//     There are no other distinct ways to paint boards.
+//     ans = 50%10000003
+
+// Input 2:
+//     A = 10
+//     B = 1
+//     C = [1, 8, 11, 3]
+// Output 2:
+//     11
 
 // 118 ms
 
@@ -74,11 +74,11 @@ bool isPossible(int A, int B, vector<int> &C,long long int X){
          return false;
         if(C[i]>t){
             cnt++;
-            t=X;
+            t=X; // we need to give it to another painter whose inital is X
         }
         else{
-            t=t-C[i];
-            i++;
+            t=t-C[i]; // t = total length we have to paint
+            i++;      // this worker can paint this C[i] length
         }
     }
     return true;
@@ -90,11 +90,11 @@ int Solution::paint(int A, int B, vector<int> &C) {
     long long int sum=0;
     for(int i=0;i<n;i++)
      sum=sum%10000003+C[i]%10000003;
-    long long int low=0,high=sum*B;
+    long long int low=0,high=sum*B; //high = length * time = total time to paint the all blocks
     long long int ans=high%10000003;
     while(low<=high){
         long long int mid=low+(high-low)/2;
-        if(isPossible(A,B,C,mid/B)){
+        if(isPossible(A,B,C,mid/B)){  //mid/B = is it possible to paint this much length by A worker 
             ans=mid%10000003;
             high=mid-1;
         }
@@ -120,11 +120,11 @@ int Solution::paint(int A, int B, vector<int> &C) {
         time=0;
         mid = (min_time+max_time)/2;
         for(int i=0; i<C.size(); i++){
-            if(time+C[i]>mid){
-                time=C[i];
+            if(time+C[i]>mid){ //if current worker paints this C[i] block , we'll need more time
+                time=C[i];   // let's give this block to a new painter
                 required++;
             }
-            else time+=C[i];
+            else time+=C[i]; // current owrker can paint this C[i] block
         }
         if(required>A) min_time = mid+1;
         else max_time = mid-1;
