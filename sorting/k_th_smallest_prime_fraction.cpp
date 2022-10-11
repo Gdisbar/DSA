@@ -79,18 +79,19 @@ vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
 // 45 % faster,60% less memory ,but using strict test cases can get TLE
 //my idea was to use map but priority queue is faster
 // TC : N*logN + K --> pushing every element in min heap(heapify takes logN)
-consider an input of [n1, n2, n3, n4, n5], the possible factors are:
-[n1/n5, n1/n4, n1/n3, n1/n2, n1/n1] ---> 1st time on pq
-[n2/n5, n2/n4, n2/n3, n2/n2]
-[n3/n5, n3/n4, n3/n3]
-[n4/n5, n4/n4]
-[n5/n5]
+// consider an input of [n1, n2, n3, n4, n5], the possible factors are:
+// [n1/n5, n1/n4, n1/n3, n1/n2, n1/n1] ---> 1st time on pq
+// [n2/n5, n2/n4, n2/n3, n2/n2]
+// [n3/n5, n3/n4, n3/n3]
+// [n4/n5, n4/n4]
+// [n5/n5]
 vector<int> kthSmallestPrimeFraction(vector<int>& A, int K) {
         int n = A.size();
         //priority_queue <Type, vector<Type>, ComparisonType > min_heap;
         priority_queue<pair<double, pair<int, int>>, vector<pair<double, pair<int, int>>>> pq;
         for (int i = 0; i < n; i++) {
-            pq.push(make_pair(-1.0*A[i]/A[n-1], make_pair(i, n-1))); //higher fraction -ve is lowest,reverse of positive number without which it'll be max_heap
+            //higher fraction -ve is lowest,reverse of positive number without which it'll be max_heap
+            pq.push(make_pair(-1.0*A[i]/A[n-1], make_pair(i, n-1))); 
         }
         int i, j;
         while(K--) { //after remove 1st K-1 smallest, we're left with K-th smallest
