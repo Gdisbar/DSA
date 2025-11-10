@@ -1,0 +1,23 @@
+📌 Video Timestamps:
+Introduction: 0:00:00
+Minimum Interval to Include Each Query: 0:01:06
+Rotate Image: 0:19:19
+Spiral Matrix: 0:35:19
+Set Matrix Zeroes: 0:54:50
+Happy Number: 1:12:22
+Plus One: 1:20:39
+Pow(x, n): 1:27:14
+Multiply Strings: 1:36:04
+Detect Squares: 1:46:42
+Single Number: 2:08:03
+Number of 1 Bits: 2:15:51
+Counting Bits: 2:27:30
+Reverse Bits: 2:42:07
+Missing Number: 2:54:50
+Sum of Two Integers: 3:09:48
+Reverse Integer: 3:25:46
+Final Message: 3:31:54
+
+📘 Important Links:
+
+https://github.com/DestinationFAANG/Destination-FAANG-Java-Solution
