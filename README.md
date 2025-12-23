@@ -1,10 +1,17 @@
+# System Design
+
+[Process Flow](https://igotanoffer.com/blogs/tech/system-design-interview-questions)
+
+[LLD Qns](https://github.com/ashishps1/awesome-low-level-design)
+
+[Youtube](https://www.youtube.com/playlist?list=PLQEaRBV9gAFvzp6XhcNFpk1WdOcyVo9qT)
+
+
 Below is a **ranked list of the 23 Gang of Four (GoF) design patterns** based on:
 
 * **How commonly they appear in real production systems today**
 * **How often backend engineers (FastAPI / microservices / distributed systems) encounter them**
 * **Practical situations where they're used**
-
-This is **real-world frequency**, not textbook ordering.
 
 ---
 
@@ -337,4 +344,6 @@ Already built into nearly every language — rarely implemented manually.
 23. Abstract Factory
 
 ---
+
+
 
