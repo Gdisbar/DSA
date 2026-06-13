@@ -1,3 +1,7 @@
+# DSA Sheet
+
+[Strivers A2Z DSA sheet](https://github.com/SatyamVyas04/Strivers_A2Z_DSA)
+
 # System Design
 
 [Process Flow](https://igotanoffer.com/blogs/tech/system-design-interview-questions)
