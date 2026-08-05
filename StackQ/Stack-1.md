@@ -442,6 +442,96 @@ def isValid(self, code: str) -> bool:
     return not stack
 
 ```
+```java
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+
+public boolean isValid(String code) {
+    Deque<String> stack = new ArrayDeque<>();
+    int i = 0;
+    int n = code.length();
+
+    while (i < n) {
+        // RULE CHECK 1: Root Tag Enclosure
+        if (i > 0 && stack.isEmpty()) {
+            return false;
+        }
+
+        // RULE CHECK 2: CDATA Block Parsing
+        if (code.startsWith("<![CDATA[", i)) {
+            int j = i + 9;
+            int nextIdx = code.indexOf("]]>", j);
+            if (nextIdx == -1) {
+                return false;
+            }
+            i = nextIdx + 3;
+        } 
+        // RULE CHECK 3: End Tag Parsing (e.g., </TAG_NAME>)
+        else if (code.startsWith("</", i)) {
+            int j = i + 2;
+            int nextIdx = code.indexOf('>', j);
+            if (nextIdx == -1) {
+                return false;
+            }
+
+            // Tag length must be between 1 and 9 characters
+            if (nextIdx == j || nextIdx - j > 9) {
+                return false;
+            }
+
+            // Tag name must contain ONLY uppercase letters
+            for (int k = j; k < nextIdx; k++) {
+                if (!Character.isUpperCase(code.charAt(k))) {
+                    return false;
+                }
+            }
+
+            String tagName = code.substring(j, nextIdx);
+
+            // Must have an open tag on stack that matches this closing tag
+            if (stack.isEmpty() || !stack.pop().equals(tagName)) {
+                return false;
+            }
+
+            i = nextIdx + 1;
+        } 
+        // RULE CHECK 4: Start Tag Parsing (e.g., <TAG_NAME>)
+        else if (code.startsWith("<", i)) {
+            int j = i + 1;
+            int nextIdx = code.indexOf('>', j);
+            if (nextIdx == -1) {
+                return false;
+            }
+
+            // Tag length must be between 1 and 9 characters
+            if (nextIdx == j || nextIdx - j > 9) {
+                return false;
+            }
+
+            // Tag name must contain ONLY uppercase letters
+            for (int k = j; k < nextIdx; k++) {
+                if (!Character.isUpperCase(code.charAt(k))) {
+                    return false;
+                }
+            }
+
+            String tagName = code.substring(j, nextIdx);
+            stack.push(tagName);
+
+            i = nextIdx + 1;
+        } 
+        // RULE CHECK 5: Plain Text Characters
+        else {
+            i++;
+        }
+    }
+
+    return stack.isEmpty();
+}
+
+```
 
 
 ## Pattern 2 — Expression Evaluation
@@ -450,6 +540,330 @@ def isValid(self, code: str) -> bool:
 |---|---|
 | Recognition | Calculator • Expression • RPN • Postfix/Prefix |
 | Core Idea | Number stack + operator stack, or a single stack depending on notation. |
-| Representative Problems | 150, 224, 227, 772 |
 
 ---
+
+### 150. Evaluate Reverse Polish Notation
+
+**Example 1**:
+
+    Input: tokens = ["2","1","+","3","*"]
+    Output: 9
+    Explanation: ((2 + 1) * 3) = 9
+
+```python
+# if current element is operator - push to stack
+# otherwise - pop 2 elements -> apply current operand -> store back in stack
+# return stack.top()
+```
+
+### 224. Basic Calculator
+
+Given a string ``s`` representing a valid expression, implement a basic calculator to evaluate it, and *return the result of the evaluation*.
+
+
+**Example 1**:
+
+    Input: s = "(1+(4+5+2)-3)+(6+8)"
+    Output: 23
+
+
+---
+
+**Input String:** `"1 + (2 - 3)"`
+
+| Char `ch` | `curr` | `sign` | `result` | Stack State (Top $\rightarrow$ Bottom) | Action Taken |
+| --- | --- | --- | --- | --- | --- |
+| `'1'` | `1` | `1` | `0` | `[]` | `curr = 1` |
+| `'+'` | `0` | `1` | `1` | `[]` | `result += 1 * 1 = 1`, `sign = 1`, `curr = 0` |
+| `'('` | `0` | `1` | `0` | `[1, 1]` | Push `result` (`1`), push `sign` (`1`). Reset `result = 0` |
+| `'2'` | `2` | `1` | `0` | `[1, 1]` | `curr = 2` |
+| `'-'` | `0` | `-1` | `2` | `[1, 1]` | `result += 2 * 1 = 2`, `sign = -1`, `curr = 0` |
+| `'3'` | `3` | `-1` | `2` | `[1, 1]` | `curr = 3` |
+| `')'` | `0` | `-1` | `0` | `[]` | `result += 3 * (-1) = -1`. Pop `sign` (`1`) $\rightarrow$ `-1 * 1 = -1`. Pop `result` (`1`) $\rightarrow$ `-1 + 1 = 0` |
+| End | `0` | `-1` | `0` | `[]` | Loop ends. Final result: `0 + 0 = 0` |
+
+**Final Output:** `0`
+
+```python
+
+def calculate(self, s: str) -> int:
+    stack = []
+    curr = 0
+    result = 0
+    sign = 1
+    
+    for i in range(len(s)):
+        if s[i].isdigit():
+            curr = 10*curr + (ord(s[i]) - ord('0'))
+        elif s[i]=="+":
+            result += curr*sign
+            sign = 1
+            curr = 0
+        elif s[i]=="-":
+            result += curr*sign
+            sign =-1
+            curr = 0
+        elif s[i]=="(":
+            # starting a new calculation
+            stack.append(result)
+            stack.append(sign)
+            result = 0
+            curr = 0
+            sign = 1
+        elif s[i]==")":
+            # finish inner calculation
+            result += curr*sign
+            curr = 0
+            # multiply by the sign before (
+            result = result * stack.pop()
+            # add previous result
+            result += stack.pop()
+    # handles the last number
+    result += curr*sign
+    return result
+
+# java
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+public int calculate(String s) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    int curr = 0;
+    int result = 0;
+    int sign = 1;
+
+    for (int i = 0; i < s.length(); i++) {
+        char ch = s.charAt(i);
+
+        if (Character.isDigit(ch)) {
+            curr = curr * 10 + (ch - '0');
+        } else if (ch == '+') {
+            result += curr * sign;
+            sign = 1;
+            curr = 0;
+        } else if (ch == '-') {
+            result += curr * sign;
+            sign = -1;
+            curr = 0;
+        } else if (ch == '(') {
+            stack.push(result);
+            stack.push(sign);
+            result = 0;
+            sign = 1;
+            curr = 0;
+        } else if (ch == ')') {
+            result += curr * sign;
+            curr = 0;
+            result *= stack.pop();
+            result += stack.pop();
+        }
+    }
+    result += curr * sign;
+    return result;
+}
+```
+
+### 227. Basic Calculator II
+
+Given a string ``s`` which represents an expression, *evaluate this expression and return its value*. 
+
+The integer division should truncate toward zero.
+
+You may assume that the given expression is always valid. All intermediate results will be in the range of [-$2^{31}$, $2^{31}$ - 1].
+
+Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as ``eval()``.
+
+ 
+**Example 1**:
+
+    Input: s = "3+2*2"
+    Output: 7
+
+**Example 2**:
+
+    Input: s = " 3+5 / 2 "
+    Output: 5
+ 
+```python
+
+def calculate(self, s: str) -> int:
+    def evaluate(x, y, operator):
+        if operator == "+":
+            return x
+        if operator == "-":
+            return -x
+        if operator == "*":
+            return x * y
+        return int(x / y)
+
+    stack = []
+    curr = 0
+    previous_operator = "+"
+    s += "@"
+    for c in s:
+        # Skip spaces so they don't break operator tracking
+        if c == ' ':
+            continue
+
+        if c.isdigit():
+            curr = curr * 10 + int(c)
+        else:
+            if previous_operator in "*/":
+                stack.append(evaluate(stack.pop(),curr,previous_operator))
+            elif previous_operator in "+-":
+                stack.append(evaluate(curr,0,previous_operator))
+            
+            curr = 0
+            previous_operator = c
+    
+    return sum(stack)
+```
+### 772. Basic Calculator III
+
+You need to implement a calculator that can evaluate mathematical expressions given as strings. The expressions can contain:
+
+- Non-negative integers (0, 1, 2, ...)
+- Four basic arithmetic operators: +, -, *, /
+- Parentheses: ( and )
+
+The calculator must follow standard mathematical rules:
+
+- Operations inside parentheses are evaluated first
+- Multiplication and division have higher precedence than addition and subtraction
+- Operations of the same precedence are evaluated left to right
+- Integer division should truncate toward zero (e.g., 5/2 = 2, -5/2 = -2)
+
+
+**Example 1**:
+
+    Input: s = "2+3*4"
+    Output: 14 (not 20 because multiplication happens first)
+
+**Example 2**:
+
+    Input: s = "(2+3)*4"
+    Output: 20 (parentheses override normal precedence)
+
+
+This problem adds parentheses to the basic calculator, which introduces nested sub-expressions. We handle this by using a stack that can hold both numbers and operators. When we see an opening parenthesis, we save the current operator and reset our state. When we see a closing parenthesis, we evaluate everything inside, then retrieve the saved operator to continue. The stack essentially lets us pause the outer expression, fully evaluate the inner one, and resume.
+
+1. Append a sentinel character ``@`` to the string to trigger final processing.
+
+2. For each character:
+
+- If it's a digit, build the current number.
+- If it's ``(``, push the previous operator onto the stack and reset the operator to ``+``.
+- Otherwise (operator or ``)`` or ``@``):
+
+    - Apply the previous operator to the current number (handle ``*`` and ``/`` by popping and computing immediately).
+    - If it's ``)``, sum all numbers on the stack until we hit a saved operator, then use that operator for the combined result.
+    - Update the previous operator and reset the current number.
+
+3. Return the sum of remaining numbers on the stack.
+
+
+```python
+
+def calculate(self, s: str) -> int:
+    def evaluate(x, y, operator):
+        if operator == "+":
+            return x
+        if operator == "-":
+            return -x
+        if operator == "*":
+            return x * y
+        return int(x / y)
+
+    stack = []
+    curr = 0
+    previous_operator = "+"
+    s += "@"
+
+    for c in s:
+        if c.isdigit():
+            curr = curr * 10 + int(c)
+        elif c == "(":
+            stack.append(previous_operator)
+            previous_operator = "+"
+        else:
+            if previous_operator in "*/":
+                stack.append(evaluate(stack.pop(), curr, previous_operator))
+            else:
+                stack.append(evaluate(curr, 0, previous_operator))
+
+            curr = 0
+            previous_operator = c
+            if c == ")":
+                # sum all numbers on the stack until we hit a saved operator
+                while type(stack[-1]) == int:
+                    curr += stack.pop()
+                # hit saved operator, which was before 
+                # previous_operator in '(' 
+                previous_operator = stack.pop()
+
+    return sum(stack)
+
+# java
+
+private String evaluate(char operator, String first, String second) {
+    int x = Integer.parseInt(first);
+    int y = Integer.parseInt(second);
+    int res = 0;
+
+    if (operator == '+') {
+        res = x;
+    } else if (operator == '-') {
+        res = -x;
+    } else if (operator == '*') {
+        res = x * y;
+    } else {
+        res = x / y;
+    }
+
+    return Integer.toString(res);
+}
+
+public int calculate(String s) {
+    Stack<String> stack = new Stack<>();
+    String curr = "";
+    char previousOperator = '+';
+    s += "@";
+    Set<String> operators = new HashSet<>(Arrays.asList("+", "-", "*", "/"));
+
+    for (char c: s.toCharArray()) {
+        if (Character.isDigit(c)) {
+            curr += c;
+        } else if (c == '(') {
+            stack.push("" + previousOperator); // convert char to string before pushing
+            previousOperator = '+';
+        } else {
+            if (previousOperator == '*' || previousOperator == '/') {
+                stack.push(evaluate(previousOperator, stack.pop(), curr));
+            } else {
+                stack.push(evaluate(previousOperator, curr, "0"));
+            }
+
+            curr = "";
+            previousOperator = c;
+            if (c == ')') {
+                int currentTerm = 0;
+                while (!operators.contains(stack.peek())) {
+                    currentTerm += Integer.parseInt(stack.pop());
+                }
+
+                curr = Integer.toString(currentTerm);
+                previousOperator = stack.pop().charAt(0); // convert string from stack back to char
+            }
+        }
+    }
+
+    int ans = 0;
+    for (String num: stack) {
+        ans += Integer.parseInt(num);
+    }
+
+    return ans;
+}
+```
