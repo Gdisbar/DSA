@@ -5,8 +5,8 @@
 | Linear Recursion | Factorial, Reverse, Power, Sum | One recursive call per step | 
 | Binary Recursion | Tree, Fibonacci, Merge, Split | Each call creates multiple children — watch for repeated work → Memoization |
 | Divide & Conquer | Split, Merge, Sort, Half | Solve left, solve right, merge |
-| Tree DFS | Tree, Path, Height, Traversal | Each node is a smaller version of the same problem | 94, 104, 112, 124, 543 |
-| Recursive Simulation | Parser, Expression, Nested | Recursion mirrors the nested structure directly | 394, 385 |
+| Tree DFS | Tree, Path, Height, Traversal | Each node is a smaller version of the same problem |
+| Recursive Simulation | Parser, Expression, Nested | Recursion mirrors the nested structure directly |
 
 ## Pattern 1 - Linear Recursion
 
@@ -579,7 +579,5 @@ public List<Integer> countSmaller(int[] nums) {
 
 ```
 
-## Pattern-4 : Tree DFS
 
-## Pattern-5 : Recursive Simulation
 
